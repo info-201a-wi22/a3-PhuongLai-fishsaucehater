@@ -1,0 +1,53 @@
+---
+title: "A3-Incarceration"
+author: Phuong Hung Lai
+date: 2/25/2022
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+source("../source/analysis.R")
+```
+
+## Introduction
+
+Using the dataset introduced by *Vera Institute of Justice* about the jails prisons in all counties of the US, we can make the following conclusions 
+
+```{r cars}
+print(summary_table)
+```
+
+
+* Most of the jail populations are white and black.
+
+* The US observed an downward trend in the recent years. 
+
+* Most of the jail people are form small/mid cities or towns
+
+* 
+
+# Summary
+
+* Total jail people in recent years:
+```{r, echo = FALSE}
+print(pull(summary_table$total_pop))
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+time_graph
+```
+
+
+```{r, echo = FALSE}
+variable_graph
+```
+
+
+```{r, echo = FALSE}
+wa_state_graph
+```
