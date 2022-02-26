@@ -29,9 +29,6 @@ wa_most_black_counties <- most_black_jails %>%
   filter(state == 'WA') %>%
   select(c(1,3))
 
-wa_black_table <- table(wa_most_black_counties)
-View(wa_black_table)
-
 most_white_jails <- from_1999 %>%
   select(year, state, county_name, white_jail_pop_rate) %>%
   group_by(year, state) %>%
@@ -43,6 +40,24 @@ wa_most_white_counties <- most_white_jails %>%
   select(c(1,3))
 
 wa_white_table <- table(wa_most_white_counties)
+
+# Average jail rate 
+
+ave_rate <- from_1999 %>%
+  select(year, state, contains("jail_pop_rate")) %>%
+  group_by(year) %>%
+  summarise(
+    White = mean(white_jail_pop_rate, na.rm = TRUE),
+    Black = mean(black_jail_pop_rate, na.rm = TRUE),
+    Latinx = mean(latinx_jail_pop_rate, na.rm = TRUE),
+    Aapi = mean(aapi_jail_pop_rate, na.rm = TRUE),
+    Native = mean(native_jail_pop_rate, na.rm = TRUE),
+  ) %>% gather(
+    Race,
+    Rate,
+    -year
+  )
+
   
 # Most admission year
 admission <- incarceration %>%
@@ -68,15 +83,19 @@ max_admission <- admission %>%
 
 summary_table <- left_join(max_admission, ave_adm,  by = "year")
 
+
+
 # Jail population from 1999
 jail_pop_1999 <- incarceration %>%
   filter(year > 1999) %>%
   select(year,state, county_name, urbanicity, contains("jail_pop"))
 
-urbanicity_and_jail <- jail_pop_1999 %>%
+# Distribution of urbanicity and jail
+urbanicity_and_jail <- from_1999 %>%
   group_by(year,state, urbanicity) %>%
   summarise_if(is.numeric, sum, na.rm = TRUE) %>%
   filter(urbanicity != "")
+
 
 total_jail_from_99 <- jail_pop_1999 %>%
   group_by(year) %>%
@@ -107,18 +126,20 @@ by_races <- from_1990s %>%
   group_by(year, Race) %>%
   summarise(total_jail_population = sum(Population))
 # Graph of number of prisoners by years
-time_graph <- ggplot(by_races, aes(x = year, y = total_jail_population)) +
+time_graph <- ggplot(ave_rate, aes(x = year, y = Rate)) +
   geom_line(aes(color = Race)) + 
   scale_y_continuous(labels = comma) +
   theme_minimal() +
   ylab("Jail population")
+
 time_graph
 
-# Variable graph 
 
+
+# Variable graph 
 wa_urbanicity_2016 <- urbanicity_and_jail %>%
-  filter(year == "2016" & state == "WA") %>% 
   ungroup(year, state) %>%
+  filter(year == 2017 & state == "WA") %>% 
   select(urbanicity,contains("jail_pop")) %>%
   select(urbanicity, c(9:14)) %>%
   rename(AAPI = aapi_jail_pop, 
@@ -135,7 +156,8 @@ wa_urbanicity_2016 <- urbanicity_and_jail %>%
 
 variable_graph <- ggplot(wa_urbanicity_2016, aes(x = urbanicity, y = Population, fill = Race)) +
   geom_bar(position = "stack", stat = "identity", size = 1) +
-  theme_minimal()
+  theme_minimal() +
+  labs(fill = "Jail population")
 variable_graph
 # Washington in most recent year
 
@@ -170,3 +192,12 @@ wa_state_graph <- ggplot(wa_state_map, aes(long, lat, group = group)) +
   minimalist
 ggplotly(wa_state_graph)
   
+# Summary Statistics
+
+total_population <- summary_table %>%
+  select(1:5)
+
+state_max_adm <- summary_table %>%
+  select(1:3)
+
+

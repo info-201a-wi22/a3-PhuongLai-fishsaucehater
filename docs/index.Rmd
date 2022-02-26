@@ -12,42 +12,63 @@ source("../source/analysis.R")
 
 ## Introduction
 
-Using the dataset introduced by *Vera Institute of Justice* about the jails prisons in all counties of the US, we can make the following conclusions 
+Using the dataset introduced by *Vera Institute of Justice* about the jails prisons in all counties of the US, we can clearly see that the distribution of convicts and criminals is significantly different between races, urban and rural. In this report, most of the analyses are used expose the discrimination between races. Moreover, the difference between urban and rural areas will also be analysed
+
 
 ```{r cars}
 print(summary_table)
 ```
 
+# Summary Variables
 
-* Most of the jail populations are white and black.
+THe following variables will help me make a sufficients analysis about the incarceration trend in the last 2 decades. 
 
-* The US observed an downward trend in the recent years. 
-
-* Most of the jail people are form small/mid cities or towns
-
-* 
-
-# Summary
-
-* Total jail people in recent years:
+### Total jail people in last 2 decades:
 ```{r, echo = FALSE}
-print(pull(summary_table$total_pop))
+print(total_population)
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
+### State with the most jail admission every year
+```{r, echo=FALSE}
+print(state_max_adm)
+```
+### County with the most black prisoners in Washington: **Yakima County**
 
+### County with the most prisoners in Washington: **King County**
+
+### Incarceration rate of all races recently: 
+
+```{r, echo = FALSE}
+recent <- ave_rate %>%
+  filter(year == max(year))
+
+print(recent)
+```
+
+## Plots
+
+
+### Time series
 ```{r pressure, echo=FALSE}
 time_graph
 ```
 
+From the graph, we can clearly see the difference between incarceration rate between races. The incarceration rate of black people is majorly more than that of white people and other race. This can exhibits the discrimination or it can reflects the differences in the living condition of people in different age groups 
 
+
+
+### Variable chart
 ```{r, echo = FALSE}
 variable_graph
 ```
 
+As can be clearly seen in the chart, most of th convicts are froy m the small/mid size cities or towns. This also exhibits the fact that most of the black people who were jailed came from the urban areas of Washington.`
 
+
+### Map
 ```{r, echo = FALSE}
 wa_state_graph
 ```
+
+As can be seen in the graph, King County is the county with the highest incarceration number. This demonstrates the distribution of incarceration and urbanicity where small cities may contain large number of convicts. 
